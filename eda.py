@@ -34,34 +34,41 @@ weekly_data = load_data(1000)
 center_info_data = load_center_data(1000)
 meal_data = load_meal_data(1000)
 
-data_load_state.text("Done! (using st.cache)")
 
 #WeeklyDemand Data
 st.subheader('Weekly Demand Data')
 st.write(weekly_data)
 st.bar_chart(weekly_data['num_orders'])
-df = pd.DataFrame(weekly_data, columns = ['num_orders','checkout_price','base_price'])
+df = pd.DataFrame(weekly_data[:200], columns = ['num_orders','checkout_price','base_price'])
 df.hist()
 plt.show()
 st.line_chart(df)
+st.pyplot()
+
+chart_data = pd.DataFrame(weekly_data[:40], columns=['num_orders', 'base_price'])
+st.area_chart(chart_data)
 
 #Fullfilment Center Information
 st.subheader('Fulfilment Center Information')
-st.write(center_info_data)
+if st.checkbox('Show Center Information data'):
+    st.subheader('Center Information data')
+    st.write(center_info_data)
+#st.write(center_info_data)
 st.bar_chart(center_info_data['region_code'])
 st.bar_chart(center_info_data['center_type'])
-hist_data = [center_info_data['center_id'],center_info_data['region_code'],center_info_data['city_code']]
-group_labels = ['Center Id', 'Region Code','city code']
-fig = ff.create_distplot(hist_data, group_labels, bin_size=[10, 25, 15])
+hist_data = [center_info_data['center_id'],center_info_data['region_code']]
+group_labels = ['Center Id', 'Region Code']
+fig = ff.create_distplot(hist_data, group_labels, bin_size=[10, 25])
 st.plotly_chart(fig, use_container_width=True)
 
 st.subheader('Meal Information')
 st.write(meal_data)
-st.line_chart(meal_data['cuisine'])
+st.bar_chart(meal_data['cuisine'])
+agree = st.button('Click to see Categories of Meal')
+if agree:
+    st.bar_chart(meal_data['category'])
 
-#if st.checkbox('Show raw data'):
-#    st.subheader('Raw data')
-#    st.write(data)
+
     
     
 
